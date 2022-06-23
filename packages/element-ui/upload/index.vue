@@ -291,13 +291,13 @@ export default create({
     },
     handleSuccess (file) {
       if (this.isPictureImg) {
-        this.text.splice(0, 1, file[this.urlKey])
+        this.text.splice(0, 1, getAsVal(file,this.urlKey))
       } else if (this.isMultiple) {
-        this.text.push(file[this.urlKey]);
+        this.text.push(getAsVal(file,this.urlKey));
       } else {
         let obj = {};
-        obj[this.labelKey] = file[this.nameKey];
-        obj[this.valueKey] = file[this.urlKey];
+        obj[this.labelKey] = getAsVal(file,this.nameKey);
+        obj[this.valueKey] = getAsVal(file,this.urlKey);
         this.text.push(obj);
       }
     },

@@ -1,6 +1,6 @@
 {
-  "name": "@smallwei/avue",
-  "version": "2.9.9",
+  "name": "@cdrorg/avue",
+  "version": "1.0.0",
   "description": "A Magic Configurable Web Framework",
   "main": "lib/avue.min.js",
   "unpkg": "lib/avue.min.js",
@@ -22,7 +22,7 @@
     "type": "git",
     "url": "git+https://gitee.com/smallweigit/avue.git"
   },
-  "author": "smallwei",
+  "author": "cdr",
   "license": "MIT",
   "bugs": {
     "url": "https://gitee.com/smallweigit/avue/issues"
