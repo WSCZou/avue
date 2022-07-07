@@ -10,6 +10,7 @@
                    :min="min"
                    :max="max"
                    :step="step"
+                   :step-strictly="stepStrictly"
                    :clearable="clearableVal"
                    :readonly="readonly"
                    :controls-position="controlsPosition"
@@ -51,6 +52,10 @@ export default create({
     max: {
       type: Number,
       default: Infinity
+    },
+    stepStrictly:{
+      type: Boolean,
+      default: false
     }
   },
   created () { },
@@ -58,3 +63,4 @@ export default create({
   methods: {}
 });
 </script>
+
