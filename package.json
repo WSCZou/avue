@@ -1,6 +1,6 @@
 {
   "name": "@cdrorg/avue",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "A Magic Configurable Web Framework",
   "main": "lib/avue.min.js",
   "unpkg": "lib/avue.min.js",
