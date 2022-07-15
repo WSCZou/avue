@@ -210,6 +210,7 @@ export default create({
     },
     handleSearchShow () {
       this.searchShow = !this.searchShow;
+      this.crud.$emit("search-show", this.searchShow);
     },
     dataFormat () {
       const option = this.crud.option;
