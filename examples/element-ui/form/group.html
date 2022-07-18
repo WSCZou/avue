@@ -45,127 +45,128 @@
         },
         option: {
           detail: false,
-          column: [{
-            label: '测试字段',
-            prop: 'name'
-          }, {
-            label: '子表单',
-            prop: 'dynamic',
-            type: 'dynamic',
-            span: 24,
-            span: 16,
-            children: {
-              rowAdd: (done) => {
-                this.$message.success('新增回调')
-                done({ input: 3 })
-              },
-              rowDel: (row, done) => {
-                this.$message.success('删除回调' + JSON.stringify(row))
-                done();
-              },
-              height: 300,
-              align: 'center',
-              headerAlign: 'center',
-              column: [{
-                width: 200,
-                label: '输入框',
-                prop: "input",
-              }, {
-                width: 200,
-                label: '密码框',
-                prop: "password",
-                type: 'password',
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入密码',
-                    trigger: 'blur'
-                  }
-                ]
-              }, {
-                width: 200,
-                label: '树型',
-                prop: "tree",
-                type: 'tree',
-                dicData: [{
-                  label: '1-1',
-                  value: 0,
-                  children: [{
-                    label: "2-1",
-                    value: 1
-                  }]
-                }]
-              }, {
-                width: 200,
-                label: '选择框',
-                prop: "select",
-                type: 'select',
-                dicData: [{
-                  label: '测试1',
-                  value: 1
-                }, {
-                  label: '测试2',
-                  value: 2
-                }]
-              }, {
-                width: 200,
-                label: '多选',
-                prop: "checkbox",
-                type: 'checkbox',
-                dicData: [{
-                  label: '测试1',
-                  value: 1
-                }, {
-                  label: '测试2',
-                  value: 2
-                }]
-              }, {
-                width: 200,
-                label: '开关',
-                prop: "switch",
-                type: 'switch',
-                dicData: [{
-                  label: '测试1',
-                  value: 1
-                }, {
-                  label: '测试2',
-                  value: 2
-                }]
-              }, {
-                width: 200,
-                label: '数字框',
-                prop: "number",
-                type: 'number'
-              }]
-            },
-            rules: [
-              {
-                required: true,
-                message: '必填项测试',
-                trigger: 'blur'
-              }
-            ]
-          }],
+          // column: [{
+          //   label: '测试字段',
+          //   prop: 'name'
+          // }, {
+          //   label: '子表单',
+          //   prop: 'dynamic',
+          //   type: 'dynamic',
+          //   span: 24,
+          //   span: 16,
+          //   children: {
+          //     rowAdd: (done) => {
+          //       this.$message.success('新增回调')
+          //       done({ input: 3 })
+          //     },
+          //     rowDel: (row, done) => {
+          //       this.$message.success('删除回调' + JSON.stringify(row))
+          //       done();
+          //     },
+          //     height: 300,
+          //     align: 'center',
+          //     headerAlign: 'center',
+          //     column: [{
+          //       width: 200,
+          //       label: '输入框',
+          //       prop: "input",
+          //     }, {
+          //       width: 200,
+          //       label: '密码框',
+          //       prop: "password",
+          //       type: 'password',
+          //       rules: [
+          //         {
+          //           required: true,
+          //           message: '请输入密码',
+          //           trigger: 'blur'
+          //         }
+          //       ]
+          //     }, {
+          //       width: 200,
+          //       label: '树型',
+          //       prop: "tree",
+          //       type: 'tree',
+          //       dicData: [{
+          //         label: '1-1',
+          //         value: 0,
+          //         children: [{
+          //           label: "2-1",
+          //           value: 1
+          //         }]
+          //       }]
+          //     }, {
+          //       width: 200,
+          //       label: '选择框',
+          //       prop: "select",
+          //       type: 'select',
+          //       dicData: [{
+          //         label: '测试1',
+          //         value: 1
+          //       }, {
+          //         label: '测试2',
+          //         value: 2
+          //       }]
+          //     }, {
+          //       width: 200,
+          //       label: '多选',
+          //       prop: "checkbox",
+          //       type: 'checkbox',
+          //       dicData: [{
+          //         label: '测试1',
+          //         value: 1
+          //       }, {
+          //         label: '测试2',
+          //         value: 2
+          //       }]
+          //     }, {
+          //       width: 200,
+          //       label: '开关',
+          //       prop: "switch",
+          //       type: 'switch',
+          //       dicData: [{
+          //         label: '测试1',
+          //         value: 1
+          //       }, {
+          //         label: '测试2',
+          //         value: 2
+          //       }]
+          //     }, {
+          //       width: 200,
+          //       label: '数字框',
+          //       prop: "number",
+          //       type: 'number'
+          //     }]
+          //   },
+          //   rules: [
+          //     {
+          //       required: true,
+          //       message: '必填项测试',
+          //       trigger: 'blur'
+          //     }
+          //   ]
+          // }],
           group: [
+            // {
+            //   label: '用户信息',
+            //   prop: 'jbxx',
+            //   collapse: false,
+            //   icon: 'el-icon-edit-outline',
+            //   column: [
+            //     {
+            //       label: '姓名',
+            //       prop: 'name',
+            //       rules: [
+            //         {
+            //           required: true,
+            //           message: '请输入姓名',
+            //           trigger: 'blur'
+            //         }
+            //       ]
+            //     }
+            //   ]
+            // },
             {
-              label: '用户信息',
-              prop: 'jbxx',
-              collapse: false,
-              icon: 'el-icon-edit-outline',
-              column: [
-                {
-                  label: '姓名',
-                  prop: 'name',
-                  rules: [
-                    {
-                      required: true,
-                      message: '请输入姓名',
-                      trigger: 'blur'
-                    }
-                  ]
-                }
-              ]
-            }, {
               label: '退款申请',
               prop: 'tksq',
               arrow: false,
@@ -173,6 +174,8 @@
               column: [
                 {
                   label: '省份',
+                  detail: true,
+                  span:12,
                   prop: 'province',
                   type: 'select',
                   props: {
@@ -193,6 +196,7 @@
                   label: '城市',
                   prop: 'city',
                   type: 'select',
+                  span:12,
                   props: {
                     label: 'name',
                     value: 'code'
@@ -211,6 +215,7 @@
                   label: '地区',
                   prop: 'area',
                   type: 'select',
+                  span:24,
                   props: {
                     label: 'name',
                     value: 'code'
@@ -246,10 +251,12 @@
                   label: '测试长度',
                   prop: 'len',
                   maxlength: 5,
+                  span:12,
                 }, {
                   label: 'radio',
                   prop: 'radio',
                   type: 'radio',
+                  span:12,
                   dicData: [{
                     label: 1,
                     value: 1
@@ -259,6 +266,7 @@
                   }]
                 }, {
                   label: '测试自定义',
+                  span:24,
                   prop: 'names',
                   formslot: true
                 }
