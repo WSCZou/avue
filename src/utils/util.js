@@ -1,5 +1,29 @@
 import { validatenull } from './validate';
 import { DIC_PROPS, DIC_SHOW_SPLIT } from 'global/variable';
+import { typeList } from 'global/variable'
+export const isMediaType = (url, type) => {
+  if (typeList.audio.test(url) || type == 'audio') {
+    return 'audio'
+  } else if (typeList.video.test(url) || type == 'video') {
+    return 'video'
+  } else if (typeList.img.test(url) || type == 'img') {
+    return 'img'
+  }
+
+}
+export const uuid = () => {
+  var s = [];
+  var hexDigits = "0123456789abcdef";
+  for (var i = 0; i < 36; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+  }
+  s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+  s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+  s[8] = s[13] = s[18] = s[23] = "-";
+
+  var uuid = s.join("");
+  return uuid;
+}
 export function getFixed (val = 0, len = 2) {
   return Number(val.toFixed(len));
 }
@@ -35,16 +59,17 @@ export function setAsVal (obj, bind = '', value) {
   eval(result);
   return obj;
 }
-export const loadScript = (type = 'js', url) => {
+export const loadScript = (type = 'js', url, dom = "body") => {
   let flag = false;
   return new Promise((resolve) => {
-    const head = document.getElementsByTagName('head')[0];
-    head.children.forEach(ele => {
+    const head = dom == 'head' ? document.getElementsByTagName('head')[0] : document.body;
+    for (let i = 0; i < head.children.length; i++) {
+      let ele = head.children[i]
       if ((ele.src || '').indexOf(url) !== -1) {
         flag = true;
         resolve();
       }
-    });
+    }
     if (flag) return;
     let script;
     if (type === 'js') {

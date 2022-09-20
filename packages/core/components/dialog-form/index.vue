@@ -1,5 +1,6 @@
 <template>
-  <el-dialog :visible.sync="visible"
+  <component :is="dialogType"
+             :visible.sync="visible"
              destroy-on-close
              class="avue-dialog"
              :beforeClose="beforeClose"
@@ -10,19 +11,19 @@
                @submit="handleSubmit"
                @reset-change="close"></avue-form>
     <span class="avue-dialog__footer"
-          v-if="this.vaildData(option.menuBtn,true)"
+          v-if="vaildData(option.menuBtn,true)"
           :class="'avue-dialog__footer--'+menuPosition">
       <el-button @click="submit"
                  :size="$AVUE.size"
                  :icon="option.submitIcon"
-                 v-if="this.vaildData(option.submitBtn,true)"
+                 v-if="vaildData(option.submitBtn,true)"
                  type="primary">{{option.submitText}}</el-button>
       <el-button @click="reset"
-                 v-if="this.vaildData(option.emptyBtn,true)"
+                 v-if="vaildData(option.emptyBtn,true)"
                  :size="$AVUE.size"
                  :icon="option.emptyIcon ">{{option.emptyText}}</el-button>
     </span>
-  </el-dialog>
+  </component>
 </template>
 <script>
 export default {
@@ -34,6 +35,7 @@ export default {
       dialog: {
         closeOnClickModal: false
       },
+      isDrawer: false,
       option: {
         submitText: '提交',
         emptyText: '关闭',
@@ -45,6 +47,9 @@ export default {
     };
   },
   computed: {
+    dialogType () {
+      return this.isDrawer ? 'elDrawer' : 'elDialog'
+    },
     menuPosition () {
       return this.opt.menuPosition || 'center'
     }
@@ -66,6 +71,8 @@ export default {
       let dialog = this.deepClone(opt);
       ['callback', 'option', 'data'].forEach(ele => delete dialog[ele])
       this.dialog = Object.assign(this.dialog, dialog);
+      this.dialog.size = this.dialog.width
+      this.isDrawer = this.dialog.type === 'drawer';
       this.option = Object.assign(this.option, opt.option);
       this.data = opt.data;
       this.visible = true;

@@ -6,7 +6,6 @@
               ref="main"
               :clearable="clearableVal"
               :disabled="disabled"
-              @change="handleChange"
               @click.native="handleClick"
               @focus="handleShow">
       <icon-temp slot="append"
@@ -16,23 +15,26 @@
                  small></icon-temp>
 
     </el-input>
-    <el-dialog class="avue-dialog avue-dialog--none"
-               :title="placeholder"
-               append-to-body
-               :visible.sync="box"
-               :width="dialogWidth">
-      <avue-tabs :option="option"
-                 @change="handleTabs"></avue-tabs>
-      <div :class="b('list')">
-        <div :class="b('item',{'active':text===item})"
-             v-for="(item,index) in list"
-             @click="handleSubmit(item.value)"
-             :key="index">
-          <icon-temp :text="item.value"></icon-temp>
-          <p>{{item.label || item.value}}</p>
+    <div v-if="box">
+      <el-dialog class="avue-dialog avue-dialog--none"
+                 :title="placeholder"
+                 :modal-append-to-body="$AVUE.modalAppendToBody"
+                 :append-to-body="$AVUE.appendToBody"
+                 :visible.sync="box"
+                 :width="dialogWidth">
+        <avue-tabs :option="option"
+                   @change="handleTabs"></avue-tabs>
+        <div :class="b('list')">
+          <div :class="b('item',{'active':text===item})"
+               v-for="(item,index) in list"
+               @click="handleSubmit(item.value)"
+               :key="index">
+            <icon-temp :text="item.value"></icon-temp>
+            <p>{{item.label || item.value}}</p>
+          </div>
         </div>
-      </div>
-    </el-dialog>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -68,7 +70,7 @@ export default create({
   computed: {
     list () {
       let list = (this.tabs.list || []).map(ele => {
-        if (!ele.value) {
+        if (!ele.value && !ele.label) {
           return {
             value: ele
           }

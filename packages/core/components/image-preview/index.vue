@@ -33,15 +33,14 @@
                           v-for="(item,indexs) in datas"
                           :key="indexs">
           <component @click="handleClick(item,indexs)"
-                     v-else
                      :id="'avue-image-preview__'+indexs"
                      :src="item.url"
                      :style="[styleName,styleBoxName]"
                      ref="item"
                      @mousedown="move"
                      controls="controls"
-                     :is="getIsVideo(item)"
-                     v-if="getIsVideo(item)"
+                     :is="isMediaType(item)"
+                     v-if="isMediaType(item)"
                      ondragstart="return false"></component>
           <div v-else
                @click="handleClick(item,indexs,true)"
@@ -74,8 +73,8 @@
   </div>
 </template>
 <script>
+import { isMediaType } from "utils/util";
 import create from "core/create";
-import { typeList } from 'global/variable'
 export default create({
   name: "image-preview",
   data () {
@@ -135,18 +134,10 @@ export default create({
         ele.pause && ele.pause()
       })
     },
-    isMedia (item) {
-      return typeList.img.test(item.url) || typeList.video.test(item.url)
-    },
-    getIsVideo (item) {
+    isMediaType (item) {
       let url = item.url
       let type = item.type
-      if (typeList.video.test(url) || type == 'video') {
-        return 'video'
-      } else if (typeList.img.test(url) || type == 'image') {
-        return 'img'
-      }
-      return
+      return isMediaType(item.url, item.type)
     },
     subScale () {
       if (this.scale != 0.2) {

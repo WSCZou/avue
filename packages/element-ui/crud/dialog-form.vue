@@ -1,72 +1,73 @@
 <template>
-  <component :is="dialogType"
-             lock-scroll
-             :destroy-on-close="crud.tableOption.dialogDestroy"
-             :wrapperClosable="crud.tableOption.dialogClickModal"
-             :direction="direction"
-             v-dialogDrag="vaildData(crud.tableOption.dialogDrag,config.dialogDrag)"
-             :class="['avue-dialog',b('dialog'),{'avue-dialog--fullscreen':fullscreen}]"
-             :custom-class="crud.tableOption.dialogCustomClass"
-             modal-append-to-body
-             append-to-body
-             :top="dialogTop"
-             :title="dialogTitle"
-             :close-on-press-escape="crud.tableOption.dialogEscape"
-             :close-on-click-modal="vaildData(crud.tableOption.dialogClickModal,false)"
-             :modal="crud.tableOption.dialogModal"
-             :show-close="crud.tableOption.dialogCloseBtn"
-             :visible.sync="boxVisible"
-             v-bind="params"
-             :before-close="hide"
-             @opened="handleOpened">
-    <div slot="title"
-         :class="b('dialog__header')">
-      <span class="el-dialog__title">{{dialogTitle}}</span>
-      <div :class="b('dialog__menu')">
-        <i @click="handleFullScreen"
-           :class="fullscreen?'el-icon-news':'el-icon-full-screen'"
-           class="el-dialog__close"></i>
+  <div v-if="boxVisible">
+    <component :is="dialogType"
+               lock-scroll
+               :destroy-on-close="crud.tableOption.dialogDestroy"
+               :wrapperClosable="crud.tableOption.dialogClickModal"
+               :direction="direction"
+               v-dialogDrag="vaildData(crud.tableOption.dialogDrag,config.dialogDrag)"
+               :class="['avue-dialog',b('dialog'),{'avue-dialog--fullscreen':fullscreen}]"
+               :custom-class="crud.tableOption.dialogCustomClass"
+               :modal-append-to-body="vaildData(crud.tableOption.dialogModalAppendToBody,$AVUE.modalAppendToBody)"
+               :append-to-body="vaildData(crud.tableOption.appendToBody,$AVUE.appendToBody)"
+               :top="dialogTop"
+               :title="dialogTitle"
+               :close-on-press-escape="crud.tableOption.dialogEscape"
+               :close-on-click-modal="vaildData(crud.tableOption.dialogClickModal,false)"
+               :modal="crud.tableOption.dialogModal"
+               :show-close="crud.tableOption.dialogCloseBtn"
+               :visible.sync="boxVisible"
+               v-bind="params"
+               :before-close="hide">
+      <div slot="title"
+           :class="b('dialog__header')">
+        <span class="el-dialog__title">{{dialogTitle}}</span>
+        <div :class="b('dialog__menu')">
+          <i @click="handleFullScreen"
+             :class="fullscreen?'el-icon-news':'el-icon-full-screen'"
+             class="el-dialog__close"></i>
+        </div>
       </div>
-    </div>
-    <avue-form v-model="crud.tableForm"
-               ref="tableForm"
-               v-if="boxVisible"
-               :status.sync="disabled"
-               @change="handleChange"
-               @submit="handleSubmit"
-               @reset-change="hide"
-               @tab-click="handleTabClick"
-               @error="handleError"
-               v-bind="$uploadFun({},crud)"
-               :option="option">
-      <template slot-scope="scope"
-                v-for="item in crud.formSlot"
-                :slot="getSlotName(item)">
-        <slot :name="item"
-              v-bind="Object.assign(scope,{
+      <avue-form v-model="crud.tableForm"
+                 ref="tableForm"
+                 :status.sync="disabled"
+                 @change="handleChange"
+                 @submit="handleSubmit"
+                 @reset-change="hide"
+                 @tab-click="handleTabClick"
+                 @error="handleError"
+                 v-bind="$uploadFun({},crud)"
+                 :option="option">
+        <template slot-scope="scope"
+                  v-for="item in crud.formSlot"
+                  :slot="getSlotName(item)">
+          <slot :name="item"
+                v-bind="Object.assign(scope,{
                     type:boxType
                   }) "></slot>
-      </template>
-    </avue-form>
-    <span class="avue-dialog__footer"
-          :class="'avue-dialog__footer--'+dialogMenuPosition">
-      <el-button v-if="vaildData(option.submitBtn,true) && !isView"
-                 @click="submit"
-                 :disabled="disabled"
-                 :size="crud.controlSize"
-                 :icon="option.submitIcon"
-                 type="primary">{{option.submitText}}</el-button>
-      <el-button v-if="vaildData(option.emptyBtn,true) && !isView"
-                 @click="reset"
-                 :disabled="disabled"
-                 :size="crud.controlSize"
-                 :icon="option.emptyIcon">{{option.emptyText}}</el-button>
-      <slot name="menuForm"
-            :disabled="disabled"
-            :size="crud.controlSize"
-            :type="boxType"></slot>
-    </span>
-  </component>
+        </template>
+      </avue-form>
+      <span class="avue-dialog__footer"
+            :class="'avue-dialog__footer--'+dialogMenuPosition">
+        <el-button v-if="vaildData(option.submitBtn,true) && !isView"
+                   @click="submit"
+                   :disabled="disabled"
+                   :size="crud.controlSize"
+                   :icon="option.submitIcon"
+                   type="primary">{{option.submitText}}</el-button>
+        <el-button v-if="vaildData(option.emptyBtn,true) && !isView"
+                   @click="reset"
+                   :disabled="disabled"
+                   :size="crud.controlSize"
+                   :icon="option.emptyIcon">{{option.emptyText}}</el-button>
+        <slot name="menuForm"
+              :disabled="disabled"
+              :size="crud.controlSize"
+              :type="boxType"></slot>
+      </span>
+    </component>
+  </div>
+
 </template>
 
 <script>
@@ -183,11 +184,9 @@ export default create({
     getSlotName (item) {
       return item.replace('Form', '')
     },
-    handleOpened () {
-      this.$nextTick(() => {
-        ['clearValidate', 'validate', 'resetForm'].forEach(ele => {
-          this.crud[ele] = this.$refs.tableForm[ele]
-        })
+    initFun () {
+      ['clearValidate', 'validate', 'resetForm', 'validateField'].forEach(ele => {
+        this.crud[ele] = this.$refs.tableForm[ele]
       })
     },
     handleChange () {
@@ -246,15 +245,16 @@ export default create({
         if (this.isEdit) {
           let { parentList, index } = this.crud.findData(row[this.crud.rowKey])
           if (parentList) {
-            parentList.splice(index, 1);
-            parentList.splice(index, 0, row);
+            parentList.splice(index, 1, row);
           }
         } else if (this.isAdd) {
           let { item } = this.crud.findData(row[this.crud.rowParentKey])
           if (item) {
             if (!item[this.crud.childrenKey]) {
-              item[this.crud.childrenKey] = []
-              item[this.crud.hasChildrenKey] = true
+              this.$set(item, this.crud.childrenKey, [])
+            }
+            if (this.crud.tableOption.lazy) {
+              this.$set(item, this.crud.hasChildrenKey, true)
             }
             item[this.crud.childrenKey].push(row)
           } else {
@@ -287,6 +287,9 @@ export default create({
       const callback = () => {
         this.fullscreen = this.crud.tableOption.dialogFullscreen
         this.boxVisible = true;
+        this.$nextTick(() => {
+          this.initFun()
+        })
       };
       if (typeof this.crud.beforeOpen === "function") {
         this.crud.beforeOpen(callback, this.boxType);

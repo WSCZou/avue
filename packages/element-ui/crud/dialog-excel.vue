@@ -1,22 +1,24 @@
 <template>
-  <el-dialog :title="t('crud.excelBtn')"
-             lock-scroll
-             :modal-append-to-body="false"
-             append-to-body
-             class="avue-dialog"
-             :visible.sync="box"
-             :width="crud.isMobile?'100%':'30%'">
-    <avue-form v-model="form"
-               :option="option"></avue-form>
-    <span slot="footer"
-          class="dialog-footer">
-      <el-button type="primary"
-                 :size="crud.isMediumSize"
-                 @click="handleSubmit">{{t('crud.filter.submitBtn')}}</el-button>
-      <el-button @click="box = false"
-                 :size="crud.isMediumSize">{{t('crud.filter.cancelBtn')}}</el-button>
-    </span>
-  </el-dialog>
+  <div v-if="box"> 
+    <el-dialog :title="t('crud.excelBtn')"
+               lock-scroll
+               :modal-append-to-body="$AVUE.modalAppendToBody"
+               :append-to-body="$AVUE.appendToBody"
+               class="avue-dialog"
+               :visible.sync="box"
+               :width="crud.isMobile?'100%':'30%'">
+      <avue-form v-model="form"
+                 :option="option"></avue-form>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button type="primary"
+                   :size="crud.isMediumSize"
+                   @click="handleSubmit">{{t('crud.filter.submitBtn')}}</el-button>
+        <el-button @click="box = false"
+                   :size="crud.isMediumSize">{{t('crud.filter.cancelBtn')}}</el-button>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -28,73 +30,51 @@ export default {
   inject: ['crud'],
   data () {
     return {
+      option: {},
+      columnOption: {},
       box: false,
       form: {
         name: this.crud.tableOption.title
       }
     }
   },
-  computed: {
-    columnOption () {
-      let result = []
-      let column = this.deepClone(this.crud.columnOption)
-      column.forEach(ele => {
-        let children = ele.children
-        if (children && !Array.isArray(children)) {
-          delete ele.children
-        }
-        if (ele.showColumn !== false) result.push(ele)
-      })
-      return result;
+  methods: {
+    handleShow () {
+      this.getColumnOption()
+      this.getOption()
+      this.box = true
     },
-    columnList () {
-      if (!this.form.params) return []
-      if (this.form.params.includes('headers')) {
-        return this.crud.propOption
-      } else {
-        let result = [];
-        const findProp = (list = []) => {
-          list.forEach((ele, index) => {
-            if (ele.children) findProp(ele.children)
-            else result.push(ele)
+    handleSubmit () {
+      this.$Export.excel({
+        title: this.form.name,
+        columns: this.getColumn(),
+        data: this.handleSum()
+      });
+      this.box = false;
+    },
+    //计算统计
+    handleSum () {
+      const option = this.crud.tableOption;
+      const columnOption = this.crud.propOption;
+      let list = this.form.type ? this.crud.list : this.crud.tableSelect;
+      let data = []
+      if (this.form.params.includes('data')) {
+        list.forEach(ele => {
+          let obj = this.deepClone(ele);
+          columnOption.forEach(column => {
+            if (column.bind) obj[column.prop] = getAsVal(obj, column.bind);
+            if (!this.validatenull(obj['$' + column.prop])) obj[column.prop] = obj['$' + column.prop];
           })
-        }
-        findProp(this.columnOption);
-        return result;
+          data.push(obj);
+        })
       }
-    },
-    columns () {
-      let columns = this.deepClone(this.columnOption);
-      if (!this.form.params) return []
-      if (this.form.params.includes('headers')) {
-        const findProp = (list = []) => {
-          list.forEach((ele, index) => {
-            if (ele.children) {
-              findProp(ele.children)
-            } else if (!this.form.prop.includes(ele.prop)) {
-              list.splice(index, 1);
-            }
-          })
-        }
-        findProp(columns);
-        return columns
-      } else {
-        let result = [];
-        const findProp = (list = []) => {
-          list.forEach((ele, index) => {
-            if (ele.children) {
-              findProp(ele.children)
-            } else if (this.form.prop.includes(ele.prop)) {
-              result.push(ele)
-            }
-          })
-        }
-        findProp(columns);
-        return result
+      if (this.form.params.includes('sum') && option.showSummary) {
+        data.push(this.crud.sumsList);
       }
+      return data;
     },
-    option () {
-      return {
+    getOption () {
+      this.option = {
         submitBtn: false,
         emptyBtn: false,
         column: [
@@ -107,13 +87,12 @@ export default {
             prop: "type",
             span: 24,
             type: 'select',
-            value: 0,
             dicData: [{
               label: '当前数据(当前页全部的数据)',
-              value: 0
+              value: true
             }, {
               label: '选中的数据(当前页选中的数据)',
-              value: 1
+              value: false
             }]
           }, {
             label: '选择字段',
@@ -161,46 +140,51 @@ export default {
           }
         ]
       }
-    }
-  },
-  watch: {
-    columnList () {
-      this.form.prop = this.columnList.map(ele => ele.prop)
-    }
-  },
-  methods: {
-    handleShow () {
-      this.box = true
+      this.form.type = this.crud.selectLen == 0
     },
-    handleSubmit () {
-      this.$Export.excel({
-        title: this.form.name,
-        columns: this.columns,
-        data: this.handleSum()
-      });
-      this.box = false;
+    getColumnOption () {
+      let result = []
+      let column = this.deepClone(this.crud.columnOption)
+      column.forEach(ele => {
+        let children = ele.children
+        if (children && !Array.isArray(children)) {
+          delete ele.children
+        }
+        if (ele.showColumn !== false) result.push(ele)
+      })
+      this.columnOption = result;
+      this.form.prop = this.columnOption.map(ele => ele.prop)
     },
-    //计算统计
-    handleSum () {
-      const option = this.crud.tableOption;
-      const columnOption = this.crud.propOption;
-      let list = this.form.type == 0 ? this.crud.list : this.crud.tableSelect;
-      let data = []
-      if (this.form.params.includes('data')) {
-        list.forEach(ele => {
-          let obj = this.deepClone(ele);
-          columnOption.forEach(column => {
-            if (column.bind) obj[column.prop] = getAsVal(obj, column.bind);
-            if (!this.validatenull(obj['$' + column.prop])) obj[column.prop] = obj['$' + column.prop];
+    getColumn () {
+      let columns = this.deepClone(this.columnOption);
+      if (!this.form.params) return []
+      if (this.form.params.includes('headers')) {
+        const findProp = (list = []) => {
+          list.forEach((ele, index) => {
+            if (ele.children) {
+              findProp(ele.children)
+            } else if (!this.form.prop.includes(ele.prop)) {
+              list.splice(index, 1);
+            }
           })
-          data.push(obj);
-        })
+        }
+        findProp(columns);
+        return columns
+      } else {
+        let result = [];
+        const findProp = (list = []) => {
+          list.forEach((ele, index) => {
+            if (ele.children) {
+              findProp(ele.children)
+            } else if (this.form.prop.includes(ele.prop)) {
+              result.push(ele)
+            }
+          })
+        }
+        findProp(columns);
+        return result
       }
-      if (this.form.params.includes('sum') && option.showSummary) {
-        data.push(this.crud.sumsList);
-      }
-      return data;
-    },
+    }
   }
 }
 </script>

@@ -60,10 +60,6 @@ export default create({
       type: Boolean,
       default: false
     },
-    expandTrigger: {
-      type: String,
-      default: 'click'
-    },
     separator: {
       type: String
     }
@@ -71,7 +67,6 @@ export default create({
   data () {
     return {};
   },
-  watch: {},
   computed: {
     allProps () {
       return {
