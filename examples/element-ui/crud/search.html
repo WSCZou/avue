@@ -23,6 +23,9 @@
     <avue-crud ref="crud" :page.sync="page" :search.sync="search" :option="option" :data="data"
       @search-change="searchChange">
       <el-tag slot="header">头部</el-tag>
+      <template slot="searchPrefix" slot-scope="{size,row}">
+        <el-button size="small">导入</el-button>
+      </template>
       <template slot="searchMenu" slot-scope="{size,row}">
         <el-button :size="size">测试</el-button>
       </template>

@@ -11,6 +11,9 @@
         <slot name="search"
               v-bind="scope"></slot>
       </template>
+      <template slot="searchPrefix" slot-scope="scope">
+        <slot name="searchPrefix" v-bind="scope"></slot>
+      </template>
       <template slot="searchMenu"
                 slot-scope="scope">
         <slot name="searchMenu"

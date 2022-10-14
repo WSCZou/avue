@@ -52,6 +52,7 @@
           </template>
           <div :class="b('group',{'flex':vaildData(item.flex,true)})"
                v-show="isGroupShow(item,index)">
+            <slot name="searchPrefix" v-bind="scope"></slot>
             <template v-for="(column,cindex) in item.column">
               <el-col v-if="vaildDisplay(column)"
                       :key="cindex"

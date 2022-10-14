@@ -13,6 +13,11 @@
                @change="handleChange"
                @reset-change="resetChange"
                v-model="searchForm">
+      <template slot="searchPrefix" slot-scope="scope">
+        <slot name="searchPrefix"
+              v-bind="scope"
+        ></slot>
+      </template>
       <template slot="menuForm"
                 slot-scope="scope">
         <slot name="searchMenu"
