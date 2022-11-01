@@ -229,6 +229,9 @@ export default create({
     defaultExpandedKeys () {
       return this.option.defaultExpandedKeys;
     },
+    allowCreate () {
+      return this.option.allowCreate;
+    },
     formOption () {
       return Object.assign(
         this.option.formOption || {},
@@ -246,6 +249,12 @@ export default create({
   },
   watch: {
     filterValue (val) {
+      if(this.allowCreate){
+        this.data.push({
+          value:val,
+          label:val,
+        })
+      }
       this.$refs.tree.filter(val);
     }
   },
