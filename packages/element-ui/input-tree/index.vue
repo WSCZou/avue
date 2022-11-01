@@ -129,6 +129,10 @@ export default create({
     popperAppendToBody: {
       type: Boolean,
       default: true
+    },
+    allowCreate:{
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -148,6 +152,12 @@ export default create({
       immediate: true
     },
     filterValue (val) {
+      if(this.allowCreate){
+        this.dic.push({
+          value:val,
+          label:val,
+        })
+      }
       this.$refs.tree.filter(val);
     }
   },

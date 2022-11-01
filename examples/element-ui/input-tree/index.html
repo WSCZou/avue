@@ -1,3 +1,10 @@
+<!--
+ * @Author: jialiangzou
+ * @Date: 2022-11-01 09:56:27
+ * @LastEditors: jialiangzou
+ * @LastEditTime: 2022-11-01 10:30:47
+ * @FilePath: /avue/examples/element-ui/input-tree/index.html
+-->
 <!DOCTYPE html>
 
 <html class="no-js">
@@ -21,7 +28,7 @@
 
 <body>
   <div id="app">
-    <avue-input-tree :dic="list" ref="tree" v-model="data">
+    <avue-input-tree :dic="list" ref="tree" v-model="data" allow-create>
       <span class="el-tree-node__label" slot-scope="{ item }">
         <span>
           <i class="el-icon-user-solid"></i>
