@@ -21,8 +21,8 @@
 <body>
   <div id="app">
     {{form}}
-    <avue-crud :option="option" :data="data" v-model="form" :upload-error="uploadError" :upload-delete="uploadDelete"
-      :upload-before="uploadBefore" :upload-exceed="uploadExceed" :upload-after="uploadAfter">
+    <avue-crud ref="crud" :option="option" :data="data" v-model="form" :upload-error="uploadError" :upload-delete="uploadDelete"
+      :upload-before="uploadBefore" :upload-exceed="uploadExceed" :upload-after="uploadAfter" @row-save="submit">
       <template slot="imgUrlType" slot-scope="{file}">
         {{file}}
       </template>
@@ -52,13 +52,20 @@
               span: 24,
               accept: [],
               propsHttp: {
-                res: 'data.0'
+                // res: 'data',
+                url:'url',
+                name:'fileName',
+                otherKeyValue:{
+                  otherData: 'data.otherData',
+                  filesize:'data.name'
+                }
               },
               headers: {
                 'Test': "test",
               },
               tip: '只能上传jpg/png文件，且不超过500kb',
-              action: 'https://avueupload.91eic.com/upload/list'
+              // action: 'https://avueupload.91eic.com/upload/list'
+              action: 'http://localhost:8080/upload'
             },
             {
               label: '水印头像',
@@ -162,11 +169,12 @@
         console.log(error, column)
       },
       uploadAfter(res, done, loading, column) {
-        console.log(res, column)
+        console.log('res:',res, column)
         done()
         this.$message.success('上传后的方法')
       },
       submit() {
+        console.log(this.form)
         this.$message.success('当前数据' + JSON.stringify(this.form))
       }
     }

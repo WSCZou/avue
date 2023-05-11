@@ -299,6 +299,14 @@ export default create({
         let obj = {};
         obj[this.labelKey] = getAsVal(file,this.nameKey);
         obj[this.valueKey] = getAsVal(file,this.urlKey);
+        if(this.propsHttp.otherKeyValue){
+          let otherKeyValueObj = this.propsHttp.otherKeyValue
+          Object.keys(otherKeyValueObj).forEach(
+            (item) => {
+              obj[item] = getAsVal(file,otherKeyValueObj[item]);
+            }
+          )
+        }
         this.text.push(obj);
       }
     },
